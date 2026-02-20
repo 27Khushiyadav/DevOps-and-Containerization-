@@ -1,4 +1,5 @@
 # Experiment 1
+### Note:- As I am a mac-user I have performed the experiment on Someone else WINDOWS system.
 
 ## Comparison of VMs and containers using Ubuntu and Nginx
 
@@ -16,60 +17,58 @@ Containers, on the other hand, are lightweight and share the host operating syst
 
 Ubuntu is used as the base operating system in both environments for consistency, while Nginx is deployed as the web server due to its high performance and low resource usage. By deploying Nginx on both a VM and a container, this experiment compares resource utilization, performance, and operational characteristics of virtual machines and containers.
 
-### Note:- As I am a mac-user 
-
 ### Step 1: Install VirtualBox and vagrant.
 Download and install Oracle VirtualBox and vagrant. 
-![Step 1](1.png)
+![Step 1](1.1.png)
 
 ### Step 2: Install ubuntu
 Install ubuntu   
-![Step 2](2.png)
+![Step 2](1.2.png)
 
 ### Step 3: start the VM
 Run `vagrant up` to create and boot the Ubuntu virtual machine.  
-![Step 3](3.png)
+![Step 3](1.3.png)
 
 ### Step 4: Access the VM
 Use `vagrant ssh` to log into the Ubuntu VM. 
-![Step 4](4.png)
+![Step 4](1.4.png)
 
 ### Step 5: Verifying. 
-![Step 5](5.png)
+![Step 5](1.5.png.jpeg)
 
 ### Step 6: Destroying and halting VMs
 Use `vagrant halt`and `vagrant destroy` to stop and destroy the VM.  
-![Step 6](6.png)
+![Step 6](1.6.png)
 
 ### Step 7: Checking wsl  
-![Step 7](7.png)
+![Step 7](1.7.png)
 
 ---
 
 ### Step 8: Configuring
 Install and configure WSL to run Linux environment on Windows.  
-![Step 8](8.png)
+![Step 8](1.8.png)
 
 ### Step 9: Install Docker inside WSL
 Install Docker Engine inside the WSL Ubuntu environment.  
-![Step 9](9.png)
+![Step 9](1.9.png)
 
 ### Step 10: Verify Docker Installation
 Check Docker version and status to confirm successful installation.  
-![Step 10](10.png)
+![Step 10](1.10.png)
 
 
 ### Step 11: Install Nginx in Container
 Install and run Nginx inside the Docker container.  
-![Step 12](12.png)
+![Step 12](1.11.png)
 
 ---
 
 ### Step 12: Compare VM and Container Performance
 Observe startup time, memory usage, CPU consumption, and overall performance.  
-![screenshot](14.png)
-![Step 13](13.png)
-![screenshot](15.png)
+![screenshot](12.1.png)
+![Step 13](12.2.png)
+![screenshot](12.3.png)
 
 ---
 
