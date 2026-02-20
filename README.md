@@ -1,7 +1,7 @@
-# Containerization and DevOps Lab
-## NAME : Priyambad suman
-## Sap ID : 500125300
-## BAtch 1 (CCVT)
+# Containerization and DevOps
+## NAME : Khushi Yadav
+## Sap ID : 500119315
+## BAtch 2 (CCVT)
 
 
 ## LAB
