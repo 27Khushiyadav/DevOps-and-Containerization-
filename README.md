@@ -1,15 +1,14 @@
-# DevOps-and-Containerization-
-<h2 align="center"> Experiment-2 </h2>
-<hr>
----
+# Containerization and DevOps Lab
+## NAME : Priyambad suman
+## Sap ID : 500125300
+## BAtch 1 (CCVT)
 
-- [Lab-2](./Lab/Exp2/Readme.md)
 
-<br><br>
+## LAB
+[Experiment 1](./Lab/Exp1/Readme.md)
 
-<h2 align="center"> Experiment-3 </h2>
-<hr>
+[Experiment 2](./Lab/Exp2/Readme.md)
 
-- [Lab-3](./Lab/Exp3/Readme.md)
+[Experiment 3](./Lab/Exp3/Readme.md)
 
----
+## Class
