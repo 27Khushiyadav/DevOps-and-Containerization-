@@ -13,6 +13,7 @@ To containerize a Flask application using Docker, manage containers, and push th
 mkdir my-flask-app
 cd my-flask-app
 ```
+![screenshot 1 ](./4.2.png)
 
 ---
 
@@ -61,6 +62,7 @@ EXPOSE 5000
 
 CMD ["python", "app.py"]
 ```
+![screenshot 1 ](./4.4.png)
 
 ---
 
@@ -69,6 +71,7 @@ CMD ["python", "app.py"]
 ```bash
 docker build -t my-flask-app .
 ```
+![screenshot 1 ](./4.10.png)
 
 ---
 
@@ -77,12 +80,16 @@ docker build -t my-flask-app .
 ```bash
 docker run -d -p 5001:5000 --name flask-container my-flask-app
 ```
+![screenshot 1 ](./4.5.png)
+
 
 Access application:
 
 ```
 http://localhost:5001
 ```
+![screenshot 1 ](./4.8.png)
+
 
 ---
 
@@ -91,6 +98,7 @@ http://localhost:5001
 ```
 http://localhost:5001/health
 ```
+![screenshot 1 ](./4.9.png)
 
 ---
 
@@ -99,7 +107,7 @@ http://localhost:5001/health
 ```bash
 docker logs flask-container
 ```
-
+![screenshot 1 ](./4.11.png)
 ---
 
 ## Step 9: Stop, Start and Remove Container
@@ -109,7 +117,7 @@ docker stop flask-container
 docker start flask-container
 docker rm -f flask-container
 ```
-
+![screenshot 1 ](./4.12.png)
 ---
 
 # Part 2 – Docker Hub Operations
@@ -135,6 +143,7 @@ docker login
 ```bash
 docker push ky270405/my-flask-app:v1
 ```
+![screenshot 1 ](./4.13.png)
 
 ---
 
@@ -152,6 +161,7 @@ docker rmi my-flask-app
 ```bash
 docker pull ky270405/my-flask-app:v1
 ```
+![screenshot 1 ](./4.14.png)
 
 ---
 
@@ -160,19 +170,20 @@ docker pull ky270405/my-flask-app:v1
 ```bash
 docker run -d -p 5002:5000 --name flask-final ky270405/my-flask-app:v1
 ```
-![screenshot 1 ](./4.3.png)
+![screenshot 1 ](./4.15.png)
 
 Access:
 
 ```
 http://localhost:5002
 ```
+![screenshot 6 ](./4.6.png)
 
 ---
 
 # Errors and Issues Faced
 
-## ->  Docker Daemon Not Running
+## ->  Docker Daemon Not RunningAt 9 AM
 
 Error:
 ```
