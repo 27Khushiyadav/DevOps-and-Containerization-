@@ -1,4 +1,5 @@
-# Experiment 5: Docker — Volumes, Environment Variables, Monitoring & Networks
+# Experiment 5: 
+# Docker — Volumes, Environment Variables, Monitoring & Networks
 
 > **Platform:** MacBook Air M1 | **Date:** March 14–15, 2026  
 > **Purpose:** Learn essential Docker features for building, configuring, and managing production-ready containerized applications.
@@ -46,7 +47,7 @@ docker --version
 docker ps
 ```
 
-> 📌 Docker Desktop must be running before executing any docker commands.
+>  Docker Desktop must be running before executing any docker commands.
 
 ---
 
@@ -61,7 +62,7 @@ cat /data/message.txt
 # Output: Hello World
 exit
 ```
-
+![screenshot 2 ](./5.1.png)
 ---
 
 #### Step 3 — Prove Data is Ephemeral
@@ -81,18 +82,19 @@ cat /data/message.txt
 exit
 ```
 
-> 📌 This proves container data does NOT survive removal.
+> This proves container data does NOT survive removal.
 
+![screenshot 3 ](./5.2.png)
 ---
 
-#### ❌ Error: Cannot remove running container
+#### Error: Cannot remove running container
 
 ```
 Error response from daemon: cannot remove container "test-container": 
 container is running: stop the container before removing or force remove
 ```
 
-#### ✅ Fix:
+#### Fix:
 
 ```bash
 docker stop test-container
@@ -110,6 +112,7 @@ docker run -d -v /app/data --name web1 nginx
 docker volume ls
 docker inspect web1 | grep -A 5 Mounts
 ```
+![screenshot 4 ](./5.3.png)
 
 **Output:** A random hash name is auto-generated for the anonymous volume, mounted at `/app/data`.
 
@@ -123,7 +126,7 @@ docker run -d -v mydata:/app/data --name web2 nginx
 docker volume ls
 docker volume inspect mydata
 ```
-
+![screenshot 2 ](./5.4.png)
 **Output:**
 ```json
 {
@@ -150,8 +153,9 @@ docker exec web3 cat /app/data/host-file.txt
 # Output: From Host
 ```
 
-> 📌 Bind mounts enable live sync between Mac host and container — any file added on the host is immediately visible inside the container.
+> Bind mounts enable live sync between Mac host and container — any file added on the host is immediately visible inside the container.
 
+![screenshot 2 ](./5.5.png)
 ---
 
 ### Lab 3: Practical Volume Examples
@@ -177,7 +181,7 @@ docker run -d \
 
 docker ps
 ```
-
+![screenshot 2 ](./5.6.png)
 ---
 
 #### Step 8 — Nginx with Config Bind Mount
@@ -202,7 +206,7 @@ docker run -d \
 curl http://localhost:8080
 # Output: Hello from mounted config!
 ```
-
+![screenshot 2 ](./5.7.png)
 ---
 
 ### Lab 4: Volume Management Commands
@@ -216,7 +220,7 @@ docker volume inspect app-volume    # inspect details
 docker volume prune                 # remove unused anonymous volumes
 docker volume rm volume-name        # remove specific volume
 ```
-
+![screenshot 2 ](./5.8.png)
 ---
 
 ## Part 2: Environment Variables
@@ -240,7 +244,7 @@ docker run -d \
 docker exec app1 env
 # Output includes: VAR1=value1, VAR2=value2, VAR3=value3
 ```
-
+![screenshot 2 ](./5.9.png)
 ---
 
 #### Step 11 — Using --env-file
@@ -258,7 +262,7 @@ docker run -d \
 docker exec app2 env
 # Output includes: DATABASE_HOST, DATABASE_PORT, API_KEY
 ```
-
+![screenshot 2 ](./5.10.png)
 ---
 
 ### Lab 2: Flask App with Environment Variables
@@ -287,6 +291,7 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
 ```
+![screenshot 2 ](./5.11.png)
 
 **requirements.txt:**
 ```
@@ -311,10 +316,11 @@ CMD ["python", "-u", "app.py"]
 ```bash
 docker build -t flask-app .
 ```
-
+![screenshot 2 ](./5.12.png)
+![screenshot 2 ](./5.13.png)
 ---
 
-#### ❌ Error: Container exited immediately in detached mode
+#### Error: Container exited immediately in detached mode
 
 ```
 docker logs flask-app → (empty output)
@@ -323,7 +329,7 @@ docker ps | grep flask-app → (no output, container not running)
 
 **Cause:** Python output buffering — Flask was not emitting logs, so the container appeared to crash silently.
 
-#### ✅ Fix: Use -u flag for unbuffered output
+#### Fix: Use -u flag for unbuffered output
 
 Changed `CMD` in Dockerfile:
 ```dockerfile
@@ -336,7 +342,7 @@ docker build -t flask-app .
 
 ---
 
-#### ❌ Error: Port 5000 already in use
+#### Error: Port 5000 already in use
 
 ```
 Error response from daemon: ports are not available: exposing port TCP 0.0.0.0:5000 
@@ -345,7 +351,7 @@ Error response from daemon: ports are not available: exposing port TCP 0.0.0.0:5
 
 **Cause:** macOS uses port 5000 for AirPlay Receiver by default.
 
-#### ✅ Fix: Use port 5001 instead
+#### Fix: Use port 5001 instead
 
 ```bash
 docker run -d \
@@ -373,7 +379,7 @@ curl http://localhost:5001/config
   "has_api_key": true
 }
 ```
-
+![screenshot 2 ](./5.14.png)
 ---
 
 ## Part 3: Docker Monitoring
@@ -394,7 +400,7 @@ docker stats --no-stream
 docker stats --no-stream --format \
   "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
 ```
-
+![screenshot 2 ](./5.15.png)
 ---
 
 #### Step 14b — docker top
@@ -409,7 +415,7 @@ UID    PID   PPID  CMD
 root   2448  2425  python -u app.py
 root   2469  2448  /usr/local/bin/python /app/app.py
 ```
-
+![screenshot 2 ](./5.16.png)
 ---
 
 ### Lab 2: Log Monitoring
@@ -427,6 +433,7 @@ docker logs -f --tail 10 -t flask-app   # follow live logs
 - Flask startup on port 5000
 - 3 GET /config requests with status 200
 
+![screenshot 2 ](./5.17.png)
 ---
 
 ### Lab 3: Container Inspection
@@ -449,7 +456,7 @@ Containers      12      610.3kB   12.29kB (2%)
 Local Volumes   6       496.8MB   0B (0%)
 Build Cache     11      217.5MB   24.58kB
 ```
-
+![screenshot 2 ](./5.18.png)
 ---
 
 ## Part 4: Docker Networks
@@ -469,7 +476,7 @@ docker network ls
 docker network create my-network
 docker network inspect my-network
 ```
-
+![screenshot 2 ](./5.19.png)
 ---
 
 #### Step 17b — Container Communication via Custom Network
@@ -480,10 +487,10 @@ docker run -d --name net-web2 --network my-network nginx
 
 # Test communication using container name as hostname
 docker exec net-web1 curl -s http://net-web2
-# Output: nginx welcome HTML page ✅
-```
+# Output: nginx welcome HTML page 
+![screenshot 2 ](./5.20.png)
 
-> 📌 Docker's built-in DNS resolved `net-web2` to its container IP automatically.
+>  Docker's built-in DNS resolved `net-web2` to its container IP automatically.
 
 ---
 
@@ -496,16 +503,16 @@ docker run -d --name isolated-app --network none alpine sleep 3600
 docker exec isolated-app ifconfig
 # Only loopback (lo) interface visible — no network access
 ```
-
+![screenshot 2 ](./5.21.png)
 ---
 
-#### ❌ Error: nslookup not found in nginx image
+####  Error: nslookup not found in nginx image
 
 ```
 OCI runtime exec failed: exec: "nslookup": executable file not found in $PATH
 ```
 
-#### ✅ Fix: Use docker network inspect instead
+####  Fix: Use docker network inspect instead
 
 ```bash
 docker network inspect my-network
@@ -513,13 +520,14 @@ docker network inspect my-network
 
 ---
 
-#### ❌ Error: ping not found in nginx image
+####  Error: ping not found in nginx image
 
 ```
 OCI runtime exec failed: exec: "ping": executable file not found in $PATH
 ```
+![screenshot 2 ](./5.21.png)
 
-#### ✅ Fix: Connectivity already proven via curl
+####  Fix: Connectivity already proven via curl
 
 Container communication was already confirmed using:
 ```bash
@@ -551,7 +559,7 @@ docker network connect my-network flask-app
 docker network inspect my-network
 # flask-app now appears in Containers section
 ```
-
+![screenshot 2 ](./5.22.png)
 ---
 
 ## Part 5: Real-World Example
@@ -605,6 +613,7 @@ docker run -d \
   -v redis-data:/data \
   redis:7-alpine
 ```
+![screenshot 2 ](./5.23.png)
 
 #### Verify Services
 
@@ -617,7 +626,7 @@ docker ps | grep -E "postgres|redis"
 redis:7-alpine   → Up  (port 6379)
 postgres:15      → Up  (port 5432)
 ```
-
+![screenshot 2 ](./5.24.png)
 ---
 
 ### Step 20 — Connect Flask and Verify Network
@@ -629,7 +638,7 @@ docker network inspect myapp-network | grep "Name"
 
 ---
 
-#### ❌ Error: curl not found in flask image
+####  Error: curl not found in flask image
 
 ```
 OCI runtime exec failed: exec: "curl": executable file not found in $PATH
@@ -637,12 +646,13 @@ OCI runtime exec failed: exec: "curl": executable file not found in $PATH
 
 **Cause:** `python:3.9-slim` is a minimal image — no curl installed.
 
-#### ✅ Fix: Use docker network inspect
+####  Fix: Use docker network inspect
 
 ```bash
 docker network inspect myapp-network
 # Confirmed flask-app, postgres, and redis all listed under Containers
 ```
+![screenshot 2 ](./5.25.png)
 
 ---
 
@@ -666,7 +676,8 @@ docker logs redis
 docker stats --no-stream --format \
   "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
 ```
-
+![screenshot 2 ](./5.26.png)
+![screenshot 2 ](./5.27.png)
 ---
 
 ## Cleanup
@@ -685,7 +696,8 @@ docker network prune -f
 # Remove unused images
 docker image prune -f
 ```
-
+![screenshot 2 ](./5.28.png)
+![screenshot 2 ](./5.29.png)
 **After cleanup:**
 - Containers → 0 remaining
 - Networks → only `bridge`, `host`, `none`
@@ -719,4 +731,4 @@ docker image prune -f
 
 ---
 
-*End of Experiment 5*
+
