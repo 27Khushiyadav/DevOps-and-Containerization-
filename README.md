@@ -13,6 +13,7 @@
 
 [Experiment 4](./Lab/Exp4/Readme.md)
 
+[Experiment 5](./Lab/Exp-5/README.md)
 
 [Experiment 6](./Lab/Exp-6/Readme.md)
 
