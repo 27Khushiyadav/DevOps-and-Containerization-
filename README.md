@@ -19,4 +19,14 @@
 
 [Experiment 7](./Lab/Exp-7/Readme.md)
 
+[Experiment 8](./Lab/Exp-8/Readme.md)
+
+[Experiment 9](./Lab/Exp-9/Readme.md)
+
+[Experiment 10](./Lab/Exp-10/Readme.md)
+
+[Experiment 11](./Lab/Exp-11/Readme.md)
+
+[Experiment 12](./Lab/Exp-12/Readme.md)
+
 ## Class
