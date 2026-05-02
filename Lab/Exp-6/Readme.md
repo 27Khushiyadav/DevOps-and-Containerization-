@@ -1,0 +1,287 @@
+# Experiment 4 – Docker and Compose Exercises
+
+## Aim
+Comparison of Docker Run and Docker Compose.
+## Objective
+This lab explores container fundamentals through multiple parts:
+
+- single container deployment with docker run
+- Compose-based service definition for nginx and WordPress
+- building a custom Node.js app image
+- multi-container orchestration with persistent storage
+
+---
+
+# Part 1 – Single Container Comparison
+This section compares running nginx directly with docker run versus using docker-compose.
+
+## Step 1: Run nginx with docker run
+
+```bash
+docker run -d \
+  --name lab-nginx \
+  -p 8081:80 \
+  -v "${PWD}/html:/usr/share/nginx/html" \
+  nginx:alpine
+```
+Verify the container is running:
+```bash
+docker ps
+```
+![screenshot 1 ](./4.2.png)
+
+Open in browser:  http://localhost:8081
+![screenshot 1 ](./4.2.png)
+
+Stop and remove the container:
+```bash 
+docker stop lab-nginx
+docker rm lab-nginx
+```
+
+---
+
+## Step 2: Run nginx with docker-compose
+Create or use the Compose file:
+
+```bash 
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: lab-nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
+```
+Run the Compose app:
+```bash
+docker compose up -d
+```
+Verify service status:
+```bash
+docker compose ps
+```
+Stop the service:
+```bash 
+docker compose down
+```
+![screenshot 1 ](./4.2.png)
+
+---
+
+## Step 3: Create requirements.txt
+
+```
+Flask==2.3.3
+```
+
+---
+
+## Step 4: Create Dockerfile
+
+```dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app.py .
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
+```
+![screenshot 1 ](./4.4.png)
+
+---
+
+## Step 5: Build Docker Image
+
+```bash
+docker build -t my-flask-app .
+```
+![screenshot 1 ](./4.10.png)
+
+---
+
+## Step 6: Run Container
+
+```bash
+docker run -d -p 5001:5000 --name flask-container my-flask-app
+```
+![screenshot 1 ](./4.5.png)
+
+
+Access application:
+
+```
+http://localhost:5001
+```
+![screenshot 1 ](./4.8.png)
+
+
+---
+
+## Step 7: Test Health Endpoint
+
+```
+http://localhost:5001/health
+```
+![screenshot 1 ](./4.9.png)
+
+---
+
+## Step 8: View Logs
+
+```bash
+docker logs flask-container
+```
+![screenshot 1 ](./4.11.png)
+---
+
+## Step 9: Stop, Start and Remove Container
+
+```bash
+docker stop flask-container
+docker start flask-container
+docker rm -f flask-container
+```
+![screenshot 1 ](./4.12.png)
+---
+
+# Part 2 – Docker Hub Operations
+
+## Step 10: Tag Image
+
+```bash
+docker tag my-flask-app ky270405/my-flask-app:v1
+```
+
+---
+
+## Step 11: Login to Docker Hub
+
+```bash
+docker login
+```
+
+---
+
+## Step 12: Push Image
+
+```bash
+docker push ky270405/my-flask-app:v1
+```
+![screenshot 1 ](./4.13.png)
+
+---
+
+## Step 13: Remove Local Image
+
+```bash
+docker rmi ky270405/my-flask-app:v1
+docker rmi my-flask-app
+```
+
+---
+
+## Step 14: Pull Image from Docker Hub
+
+```bash
+docker pull ky270405/my-flask-app:v1
+```
+![screenshot 1 ](./4.14.png)
+
+---
+
+## Step 15: Run Pulled Image
+
+```bash
+docker run -d -p 5002:5000 --name flask-final ky270405/my-flask-app:v1
+```
+![screenshot 1 ](./4.15.png)
+
+Access:
+
+```
+http://localhost:5002
+```
+![screenshot 6 ](./4.6.png)
+
+---
+
+# Errors and Issues Faced
+
+## ->  Docker Daemon Not RunningAt 9 AM
+
+Error:
+```
+Cannot connect to the Docker daemon...
+```
+
+Reason:
+Docker Desktop was not started.
+
+Solution:
+Started Docker Desktop and verified using:
+```bash
+docker version
+```
+
+---
+
+## -> Port 5000 Already in Use
+
+Error:
+```
+bind: address already in use
+```
+
+Reason:
+Port 5000 was already used by a system process.
+
+Solution:
+Used a different port:
+```bash
+docker run -d -p 5001:5000 ...
+```
+
+---
+
+## -> Container Name Already in Use
+
+Error:
+```
+container name is already in use
+```
+
+Reason:
+A container with the same name already existed.
+
+Solution:
+```bash
+docker rm -f flask-container
+```
+
+---
+
+# Results
+
+- Successfully containerized a Flask application.
+- Built Docker image.
+- Ran container with port mapping.
+- Managed container lifecycle.
+- Tagged and pushed image to Docker Hub.
+- Pulled and ran image successfully.
+
+---
+
+# Conclusion
+
+The experiment successfully demonstrated Docker containerization, image management, port mapping, container lifecycle management, and integration with Docker Hub.
