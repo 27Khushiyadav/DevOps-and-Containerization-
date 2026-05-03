@@ -1,4 +1,4 @@
-# Experiment 4 – Docker and Compose Exercises
+# Experiment 6 – Docker and Compose Exercises
 
 ## Aim
 Comparison of Docker Run and Docker Compose.
@@ -28,17 +28,17 @@ Verify the container is running:
 ```bash
 docker ps
 ```
-![screenshot 1 ](./4.2.png)
+![screenshot 1 ](./6.1.png)
 
 Open in browser:  http://localhost:8081
-![screenshot 1 ](./4.2.png)
+![screenshot 1 ](./6.2.png)
 
 Stop and remove the container:
 ```bash 
 docker stop lab-nginx
 docker rm lab-nginx
 ```
-
+![screenshot 1 ](./6.3.png)
 ---
 
 ## Step 2: Run nginx with docker-compose
@@ -68,220 +68,226 @@ Stop the service:
 ```bash 
 docker compose down
 ```
-![screenshot 1 ](./4.2.png)
+![screenshot 1 ](./6.4.png)
 
 ---
+# Part 2 – Multi-Container Application (WordPress + MySQL)
 
-## Step 3: Create requirements.txt
+This section demonstrates WordPress with MySQL using both docker run and docker-compose.
 
+## Task 2A: Run with docker run
+
+Create a custom network:
+```bash 
+docker network create wp-net
 ```
-Flask==2.3.3
+Run MySQL:
+```bash
+docker run -d \
+  --name mysql \
+  --network wp-net \
+  -e MYSQL_ROOT_PASSWORD=secret \
+  -e MYSQL_DATABASE=wordpress \
+  mysql:5.7
+  ```
+  
+Run WordPress:
+
+```bash 
+
+docker run -d \
+  --name wordpress \
+  --network wp-net \
+  -p 8082:80 \
+  -e WORDPRESS_DB_HOST=mysql \
+  -e WORDPRESS_DB_PASSWORD=secret \
+  wordpress:latest
+  ```
+
+  ![screenshot 1 ](./6.5.png)
+
+Open in browser:
+```bash
+http://localhost:8082
+```
+![screenshot 1 ](./6.6png)
+![screenshot 1 ](./6.7.png)
+
+## Task 2B: Run with docker-compose
+
+Use the Compose file in Part B/docker-compose.yml:
+
+```bash 
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: wordpress
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "8082:80"
+    environment:
+      - WORDPRESS_DB_HOST=mysql
+      - WORDPRESS_DB_PASSWORD=secret
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
+  ```
+
+Start the stack:
+
+```bash 
+docker compose up -d
 ```
 
----
+Stop and remove volumes:
+```bash
+docker compose down -v
+```
+![screenshot 1 ](./6.8.png)
 
-## Step 4: Create Dockerfile
+## Part 3 — Custom Node.js Build (Part C/Task 4)
 
-```dockerfile
-FROM python:3.9-slim
+This part builds a simple Express app into a Docker image.
+
+### Files involved
+
+- Part C/Task 4/Dockerfile
+- Part C/Task 4/server.js
+- Part C/Task 4/package.json
+
+### Dockerfile
+```bash 
+
+FROM node:18-alpine
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY package*.json ./
+RUN npm install
 
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY app.py .
+COPY . .
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
-```
-![screenshot 1 ](./4.4.png)
-
----
-
-## Step 5: Build Docker Image
-
-```bash
-docker build -t my-flask-app .
-```
-![screenshot 1 ](./4.10.png)
-
----
-
-## Step 6: Run Container
-
-```bash
-docker run -d -p 5001:5000 --name flask-container my-flask-app
-```
-![screenshot 1 ](./4.5.png)
-
-
-Access application:
-
-```
-http://localhost:5001
-```
-![screenshot 1 ](./4.8.png)
-
-
----
-
-## Step 7: Test Health Endpoint
-
-```
-http://localhost:5001/health
-```
-![screenshot 1 ](./4.9.png)
-
----
-
-## Step 8: View Logs
-
-```bash
-docker logs flask-container
-```
-![screenshot 1 ](./4.11.png)
----
-
-## Step 9: Stop, Start and Remove Container
-
-```bash
-docker stop flask-container
-docker start flask-container
-docker rm -f flask-container
-```
-![screenshot 1 ](./4.12.png)
----
-
-# Part 2 – Docker Hub Operations
-
-## Step 10: Tag Image
-
-```bash
-docker tag my-flask-app ky270405/my-flask-app:v1
+CMD ["node", "server.js"]
 ```
 
----
+### server.js
 
-## Step 11: Login to Docker Hub
+```bash 
+const express = require('express');
+const app = express();
+const port = 5000;
 
-```bash
-docker login
+app.get('/', (req, res) => {
+  res.send('Hello from your Custom Docker Build!');
+});
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+```
+### Build and run
+```bash 
+docker build -t lab-node-app "Part C/Task 4"
+
+docker run -d -p 5000:5000 --name lab-node-app lab-node-app
 ```
 
----
-
-## Step 12: Push Image
-
-```bash
-docker push ky270405/my-flask-app:v1
+Verify by opening:
+```bash 
+http://localhost:5000
 ```
-![screenshot 1 ](./4.13.png)
+![screenshot 1 ](./6.9.png)
+![screenshot 1 ](./6.10.png)
+![screenshot 1 ](./6.11.png)
+Cleanup:
+```bash 
 
----
-
-## Step 13: Remove Local Image
-
-```bash
-docker rmi ky270405/my-flask-app:v1
-docker rmi my-flask-app
+docker stop lab-node-app
+docker rm lab-node-app
+docker image rm lab-node-app
 ```
 
----
+## Part 4 — Persistent MySQL Volume (Part D/Task 5)
 
-## Step 14: Pull Image from Docker Hub
+This task shows a Compose service with a named volume for MySQL data persistence.
 
-```bash
-docker pull ky270405/my-flask-app:v1
+### Files involved
+
+- Part D/Task 5/docker-compose.yml
+- Part D/Task 5/Dockerfile
+- Part D/Task 5/app.js
+
+### docker-compose.yml
+```bash 
+version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: mysql-persistent
+    environment:
+      MYSQL_ROOT_PASSWORD: labpassword
+      MYSQL_DATABASE: inventory
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+
+volumes:
+  db_data:
+  ```
+
+### app.js
+
+```bash 
+const http = require('http');
+
+http.createServer((req, res) => {
+  res.end('Docker Compose Build Lab');
+}).listen(3000);
 ```
-![screenshot 1 ](./4.14.png)
+### Dockerfile
+```bash 
 
----
+FROM node:18-alpine
 
-## Step 15: Run Pulled Image
+WORKDIR /app
 
-```bash
-docker run -d -p 5002:5000 --name flask-final ky270405/my-flask-app:v1
+COPY app.js .
+
+EXPOSE 3000
+
+CMD ["node", "app.js"]
 ```
-![screenshot 1 ](./4.15.png)
-
-Access:
-
+### Start the database stack:
+```bash 
+docker compose -f "Part D/Task 5/docker-compose.yml" up -d
 ```
-http://localhost:5002
-```
-![screenshot 6 ](./4.6.png)
-
----
-
-# Errors and Issues Faced
-
-## ->  Docker Daemon Not RunningAt 9 AM
-
-Error:
-```
-Cannot connect to the Docker daemon...
-```
-
-Reason:
-Docker Desktop was not started.
-
-Solution:
-Started Docker Desktop and verified using:
-```bash
-docker version
-```
-
----
-
-## -> Port 5000 Already in Use
-
-Error:
-```
-bind: address already in use
-```
-
-Reason:
-Port 5000 was already used by a system process.
-
-Solution:
-Used a different port:
-```bash
-docker run -d -p 5001:5000 ...
+### Stop and remove the stack:
+```bash 
+docker compose -f "Part D/Task 5/docker-compose.yml" down -v
 ```
 
----
+### Image Gallery
 
-## -> Container Name Already in Use
+The following images document the lab execution and results:
+![screenshot 1 ](./6.12.png)
+![screenshot 1 ](./6.13.png)
 
-Error:
-```
-container name is already in use
-```
 
-Reason:
-A container with the same name already existed.
+### Notes
 
-Solution:
-```bash
-docker rm -f flask-container
-```
-
----
-
-# Results
-
-- Successfully containerized a Flask application.
-- Built Docker image.
-- Ran container with port mapping.
-- Managed container lifecycle.
-- Tagged and pushed image to Docker Hub.
-- Pulled and ran image successfully.
-
----
-
-# Conclusion
-
-The experiment successfully demonstrated Docker containerization, image management, port mapping, container lifecycle management, and integration with Docker Hub.
+- The root docker-compose.yml in lab/exp6 is configured to build a Node app from a local Dockerfile.
+- If that Dockerfile is not present in the root folder, use the Part C/Task 4 or Part D/Task 5 examples as working references for custom builds.
+- Use docker compose ps, docker ps, and docker logs <container> for troubleshooting.
